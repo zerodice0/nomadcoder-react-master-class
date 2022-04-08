@@ -18,6 +18,6 @@ export const fetchCoinHistory = async (coinId: string) => {
   const startDate = endDate - 60 * 60 * 24 * 30;
 
   return fetch(
-    `https://api.coinpaprika.com/v1/coins/${coinId}/ohlcv/historical?start=%{startDate}&end=%{endDate}`
+    `https://api.coinpaprika.com/v1/coins/${coinId}/ohlcv/historical?start=${startDate}&end=${endDate}`
   ).then(response => response.json());
 };
