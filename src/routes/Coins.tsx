@@ -1,4 +1,5 @@
 // import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -37,12 +38,11 @@ const Image = styled.img`
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
-  background-color: white;
-  color: ${props => props.theme.backgroundColor};
+  background-color: ${props => props.theme.boxColor};
+  color: ${props => props.theme.textColor};
   margin-bottom: 10px;
   padding: 20px;
   border-radius: 15px;
-  transition: color 1s ease-in;
 
   a {
     display: flex;
@@ -58,7 +58,6 @@ const Coin = styled.li`
     }
   }
 `;
-
 interface CoinInterface {
   id: string;
   name: string;
@@ -85,6 +84,9 @@ const Coins = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>Coins</title>
+      </Helmet>
       <Header>
         <Title>Coins</Title>
       </Header>
