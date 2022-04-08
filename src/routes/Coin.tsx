@@ -1,4 +1,5 @@
 // import { useEffect, useState } from "react";
+import Helmet from "react-helmet";
 import { useQuery } from "react-query";
 import {
   Route,
@@ -38,6 +39,15 @@ const Header = styled.header`
 const Loader = styled.span`
   text-align: center;
   display: block;
+`;
+
+const Navigation = styled.div`
+  height: 3rem;
+  display: flex;
+  justify-content: align-items;
+  align-items: center;
+  border-bottom: 1px solid ${props => props.theme.boxColor};
+  color: ${props => props.theme.boxColor};
 `;
 
 interface RouteState {
@@ -105,7 +115,7 @@ interface PriceData {
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${props => props.theme.boxColor};
   padding: 10px 20px;
   border-radius: 10px;
 `;
@@ -125,6 +135,7 @@ const OverviewItem = styled.div`
 
 const Description = styled.p`
   margin: 20px 0px;
+  color: ${props => props.theme.boxColor};
 `;
 
 const Tabs = styled.div`
@@ -139,7 +150,7 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${props => props.theme.boxColor};
   padding: 7px 0px;
   border-radius: 10px;
   color: ${props =>
@@ -165,7 +176,10 @@ const Coin = () => {
     );
   const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
     ["ticker", coinId],
-    () => fetchCoinTickers(coinId ?? "")
+    () => fetchCoinTickers(coinId ?? ""),
+    {
+      refetchInterval: 5000,
+    }
   );
 
   // useEffect(() => {
@@ -186,9 +200,20 @@ const Coin = () => {
   //   })();
   // }, [coinId]);
 
-  console.log(coinId);
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name
+            ? state.name
+            : infoLoading || tickersLoading
+            ? "Loading..."
+            : informationData?.name}
+        </title>
+      </Helmet>
+      <Link to="/">
+        <Navigation>&larr; return to coin list</Navigation>
+      </Link>
       <Header>
         <Title>
           {state?.name
@@ -212,8 +237,8 @@ const Coin = () => {
               <span>${informationData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{informationData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>{tickersData?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{informationData?.description}</Description>
