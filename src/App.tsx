@@ -60,6 +60,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Source Sans Pro', sans-serif;
     background-color: ${props => props.theme.backgroundColor};
     color: ${props => props.theme.textColor};
+    line-height: 1.2;
   }
 
   a {
