@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import {
   Route,
   Routes,
   useLocation,
-  useParams,
   useMatch,
-  matchPath,
-  PathMatch,
+  useParams,
+  // matchPath,
+  // PathMatch,
 } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+
+import { fetchCoinInformation, fetchCoinTickers } from "@/api";
+
 import Chart from "./Chart";
 import Price from "./Price";
 
@@ -146,69 +150,81 @@ const Tab = styled.span<{ isActive: boolean }>`
 `;
 
 const Coin = () => {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const location = useLocation();
   const state = location.state as RouteState;
 
   const { coinId } = useParams<"coinId">();
-  const [price, setPrice] = useState<PriceData>();
-  const [info, setInfo] = useState<InformationData>();
+  // const [price, setPrice] = useState<PriceData>();
+  // const [info, setInfo] = useState<InformationData>();
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
+  const { isLoading: infoLoading, data: informationData } =
+    useQuery<InformationData>(["info", coinId], () =>
+      fetchCoinInformation(coinId ?? "")
+    );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
+    ["ticker", coinId],
+    () => fetchCoinTickers(coinId ?? "")
+  );
 
-  useEffect(() => {
-    (async () => {
-      const coinInformationResponse = await fetch(
-        `https://api.coinpaprika.com/v1/coins/${state?.id ?? coinId}/`
-      );
-      const coinPriceResponse = await fetch(
-        `https://api.coinpaprika.com/v1/tickers/${state?.id ?? coinId}/`
-      );
-      const coinInformationData = await coinInformationResponse.json();
-      const coinPriceData = await coinPriceResponse.json();
-      // console.log(coinInformationData);
-      setInfo(coinInformationData);
-      // console.log(coinPriceData);
-      setPrice(coinPriceData);
-      setLoading(false);
-    })();
-  }, [coinId]);
+  // useEffect(() => {
+  //   (async () => {
+  //     const coinInformationResponse = await fetch(
+  //       `https://api.coinpaprika.com/v1/coins/${state?.id ?? coinId}/`
+  //     );
+  //     const coinPriceResponse = await fetch(
+  //       `https://api.coinpaprika.com/v1/tickers/${state?.id ?? coinId}/`
+  //     );
+  //     const coinInformationData = await coinInformationResponse.json();
+  //     const coinPriceData = await coinPriceResponse.json();
+  //     // console.log(coinInformationData);
+  //     setInfo(coinInformationData);
+  //     // console.log(coinPriceData);
+  //     setPrice(coinPriceData);
+  //     setLoading(false);
+  //   })();
+  // }, [coinId]);
 
   console.log(coinId);
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+          {state?.name
+            ? state.name
+            : infoLoading || tickersLoading
+            ? "Loading..."
+            : informationData?.name}
         </Title>
       </Header>
-      {loading ? (
+      {infoLoading || tickersLoading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{informationData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${informationData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{informationData?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{informationData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{price?.total_supply}</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{price?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
