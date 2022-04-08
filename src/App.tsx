@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 
 import Router from "./Router";
+import { darkTheme, lightTheme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
@@ -70,13 +72,35 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const FloatButton = styled.button`
+  position: fixed;
+  width: 4rem;
+  height: 4rem;
+  top: 20px;
+  right: 20px;
+  background-color: ${props => props.theme.accentColor};
+  color: white;
+  border: none;
+  border-radius: 50%;
+`;
+
 function App() {
+  const [theme, setTheme] = useState(darkTheme);
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <FloatButton
+        onClick={() => {
+          setTheme(theme === darkTheme ? lightTheme : darkTheme);
+          localStorage.setItem("theme", theme === darkTheme ? "dark" : "light");
+        }}
+      >
+        Change Theme
+      </FloatButton>
       <GlobalStyle />
       <Router />
       <ReactQueryDevtools initialIsOpen={false} />
-    </>
+    </ThemeProvider>
   );
 }
 
