@@ -22,7 +22,10 @@ interface ChartInterface {
 const Chart = ({ coinId }: ChartProps) => {
   const { isLoading, data } = useQuery<ChartInterface[]>(
     ["ohlcv", coinId],
-    () => fetchCoinHistory(coinId)
+    () => fetchCoinHistory(coinId),
+    {
+      refetchInterval: 10000,
+    }
   );
   return (
     <>
