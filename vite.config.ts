@@ -2,10 +2,26 @@ import legacy from "@vitejs/plugin-legacy";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
+import viteCompression from "vite-plugin-compression";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [legacy(), reactRefresh()],
+  plugins: [legacy(), reactRefresh(), viteCompression()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return id
+              .toString()
+              .split("node_modules/")[1]
+              .split("/")[0]
+              .toString();
+          }
+        },
+      },
+    },
+  },
   esbuild: {
     jsxInject: `import React from 'react'`, // automatically import React in jsx files
   },
