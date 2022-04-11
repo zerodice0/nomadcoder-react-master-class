@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ReactQueryDevtools } from "react-query/devtools";
-import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 
+import { ToggleButton } from "./components/ToggleButton";
 import Router from "./Router";
 import { darkTheme, lightTheme } from "./theme";
 
@@ -72,31 +73,22 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const FloatButton = styled.button`
-  position: fixed;
-  width: 4rem;
-  height: 4rem;
-  top: 20px;
-  right: 20px;
-  background-color: ${props => props.theme.accentColor};
-  color: white;
-  border: none;
-  border-radius: 50%;
-`;
-
 function App() {
+  const _changeTheme = () => {
+    setTheme(theme === darkTheme ? lightTheme : darkTheme);
+    localStorage.setItem("theme", theme === darkTheme ? "dark" : "light");
+  };
+
   const [theme, setTheme] = useState(darkTheme);
 
   return (
     <ThemeProvider theme={theme}>
-      <FloatButton
-        onClick={() => {
-          setTheme(theme === darkTheme ? lightTheme : darkTheme);
-          localStorage.setItem("theme", theme === darkTheme ? "dark" : "light");
-        }}
-      >
-        Change Theme
-      </FloatButton>
+      <ToggleButton
+        position="fixed"
+        right="20px"
+        top="20px"
+        onChange={_changeTheme}
+      />
       <GlobalStyle />
       <Router />
       <ReactQueryDevtools initialIsOpen={false} />
