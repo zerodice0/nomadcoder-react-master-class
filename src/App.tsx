@@ -1,10 +1,6 @@
-import { useState } from "react";
-import { ReactQueryDevtools } from "react-query/devtools";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-import { ToggleButton } from "./components/ToggleButton";
-import Router from "./Router";
-import { darkTheme, lightTheme } from "./theme";
+import { darkTheme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
@@ -74,24 +70,9 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-  const _changeTheme = () => {
-    setTheme(theme === darkTheme ? lightTheme : darkTheme);
-    localStorage.setItem("theme", theme === darkTheme ? "dark" : "light");
-  };
-
-  const [theme, setTheme] = useState(darkTheme);
-
   return (
-    <ThemeProvider theme={theme}>
-      <ToggleButton
-        position="fixed"
-        right="20px"
-        top="20px"
-        onChange={_changeTheme}
-      />
+    <ThemeProvider theme={darkTheme}>
       <GlobalStyle />
-      <Router />
-      <ReactQueryDevtools initialIsOpen={false} />
     </ThemeProvider>
   );
 }
