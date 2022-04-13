@@ -1,11 +1,32 @@
 import { FieldValues, useForm } from "react-hook-form";
+import styled from "styled-components";
+
+interface FormInterface {
+  lastName: string;
+  firstName: string;
+  userName: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
+
+const ErrorMessage = styled.span`
+  color: red;
+`;
 
 export const ToDoList = () => {
-  const { register, handleSubmit, formState } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }, //destructuring assignment for formState.errors
+  } = useForm<FormInterface>({
+    defaultValues: {
+      email: "@gmail.com",
+    },
+  });
   const onValid = (data: FieldValues) => {
     console.log(data);
   };
-  console.log(formState.errors);
 
   return (
     <div>
@@ -13,21 +34,31 @@ export const ToDoList = () => {
         style={{ display: "flex", flexDirection: "column" }}
         onSubmit={handleSubmit(onValid)}
       >
-        <input {...register("Email", { required: true })} placeholder="Email" />
         <input
-          {...register("First Name", { required: true })}
+          {...register("email", {
+            required: true,
+            pattern: {
+              value: /^[A-Za-z0-9._%+-]+@gmail.com$/,
+              message: "Only gmail.com emails allowed",
+            },
+          })}
+          placeholder="Email"
+        />
+        <ErrorMessage>{errors?.email?.message}</ErrorMessage>
+        <input
+          {...register("firstName", { required: "write here" })}
           placeholder="First Name"
         />
         <input
-          {...register("Last Name", { required: true })}
+          {...register("lastName", { required: "write here" })}
           placeholder="Last Name"
         />
         <input
-          {...register("Username", { required: true, minLength: 10 })}
+          {...register("userName", { required: "write here", minLength: 10 })}
           placeholder="Username"
         />
         <input
-          {...register("password", { required: true, minLength: 5 })}
+          {...register("password", { required: "write here", minLength: 5 })}
           placeholder="Password"
         />
         <input
@@ -40,6 +71,7 @@ export const ToDoList = () => {
           })}
           placeholder="Password Confirm"
         />
+        <ErrorMessage>{errors.passwordConfirm?.message}</ErrorMessage>
         <button>Add</button>
       </form>
     </div>
