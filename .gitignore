@@ -147,6 +147,8 @@ node_modules/
 
 # Output of 'npm pack'
 *.tgz
+package-lock.json
+yarn-lock.json
 
 # dotenv environment variables file
 .env
