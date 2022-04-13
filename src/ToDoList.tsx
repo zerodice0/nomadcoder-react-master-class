@@ -1,26 +1,45 @@
-import { FormEvent, useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
 
 export const ToDoList = () => {
-  const [toDo, setToDo] = useState("");
-
-  const onChange = (event: FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-
-    setToDo(value);
+  const { register, handleSubmit, formState } = useForm();
+  const onValid = (data: FieldValues) => {
+    console.log(data);
   };
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    console.log(toDo);
-  };
+  console.log(formState.errors);
 
   return (
     <div>
-      <form onSubmit={onSubmit}>
-        <input value={toDo} placeholder="Write a to do" onChange={onChange} />
+      <form
+        style={{ display: "flex", flexDirection: "column" }}
+        onSubmit={handleSubmit(onValid)}
+      >
+        <input {...register("Email", { required: true })} placeholder="Email" />
+        <input
+          {...register("First Name", { required: true })}
+          placeholder="First Name"
+        />
+        <input
+          {...register("Last Name", { required: true })}
+          placeholder="Last Name"
+        />
+        <input
+          {...register("Username", { required: true, minLength: 10 })}
+          placeholder="Username"
+        />
+        <input
+          {...register("password", { required: true, minLength: 5 })}
+          placeholder="Password"
+        />
+        <input
+          {...register("passwordConfirm", {
+            required: "Password is required!",
+            minLength: {
+              value: 5,
+              message: "Password must be at least 5 characters long",
+            },
+          })}
+          placeholder="Password Confirm"
+        />
         <button>Add</button>
       </form>
     </div>
